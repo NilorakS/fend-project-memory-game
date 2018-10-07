@@ -117,9 +117,11 @@ function turnBackOverCurrentPair() {
 }
 
 function matchFound() {
-    currentPair.forEach(function(card) {
-        hideSymbol(card);
-        displayMatch(card);
+    currentPair.forEach(function(card) {       
+        setTimeout(function() {
+            hideSymbol(card);
+            displayMatch(card);
+        }, 600)      
     });
     resetCurrentPair();
     matches++;
