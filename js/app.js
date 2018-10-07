@@ -1,16 +1,74 @@
 /*
- * Create a list that holds all of your cards
+ * GAME SETUP
  */
-const cards = document.querySelectorAll('.card');
+
+let cards = Array.from(document.querySelectorAll('.card'));
+let currentPair = [];
+let moveCounter = document.querySelector('.moves');
+let matches = 0;
+const restart = document.querySelector('.restart');
+
+startGame();
+
 
 /*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
+ * CLICK EVENT LISTENERS
  */
 
+cards.forEach(function(card) {
+    card.addEventListener('click', function onClick(event) {
 
+        turnOver(card);
+
+        if(twoCardsTurnedOver()) {
+            incrementMoveCounter();
+
+            if(currentPairMatches()) {
+                matchFound();
+
+                if(allMatchesFound()) {
+                    gameWon();
+                }
+            } else {
+                turnBackOverCurrentPair();
+            }
+        }
+    });
+});
+
+restart.addEventListener('click', function() {
+    startGame();
+});
+
+
+/*
+ * FUNCTIONS FOR GAME SETUP
+ */
+
+function startGame() {
+    shuffleCards();
+    updateCardDeck();
+    resetValues();
+}
+
+function shuffleCards() {
+    cards = shuffle(cards);
+}
+
+function updateCardDeck() {
+    let deck = document.querySelector('.deck');
+    cards.forEach(function(card) {
+        deck.removeChild(card);
+        resetCardToVirginState(card);
+        deck.appendChild(card);       
+    });
+}
+
+function resetValues() {
+    resetCurrentPair();
+    resetMoveCounter();
+    resetMatches();
+} 
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -27,41 +85,14 @@ function shuffle(array) {
     return array;
 }
 
+function resetCardToVirginState(card) {
+    card.classList.remove('match');
+}
+
 
 /*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
+ * FUNCTIONS FOR CARD EVENT LISTENER
  */
-
-cards.forEach(function(card) {
-    card.addEventListener('click', function onClick(event) {
-
-        turnOver(card);
-
-        if(twoCardsTurnedOver()) {
-            incrementMoveCounter();
-
-            if(currentPairMatches()) {
-                matchFound();
-                if(allMatchesFound()) {
-                    gameWon();
-                }
-            } else {
-                turnBackOverCurrentPair();
-            }
-        }
-    });
-});
-
-let currentPair = [];
-let moveCounter = document.querySelector('.moves');
-let matches = 0;
 
 function turnOver(card) {
     if (isTurnedOver(card)) {
@@ -85,6 +116,37 @@ function turnBackOverCurrentPair() {
     }, 1000);
 }
 
+function matchFound() {
+    currentPair.forEach(function(card) {
+        hideSymbol(card);
+        displayMatch(card);
+    });
+    resetCurrentPair();
+    matches++;
+}
+
+function gameWon() {
+    displayWinnerMessage();
+}
+
+function displayWinnerMessage() {
+    swal("Congratulations!", "You won with " + moveCounter.textContent + " moves!", "success", {
+        button: "Play again!",
+        }).then((willPlayAgain) => {
+            if (willPlayAgain) {
+                startGame();
+            }             
+    })
+}
+
+function incrementMoveCounter() {
+    moveCounter.textContent++;
+} 
+
+function resetMoveCounter() {
+    moveCounter.textContent = 0;
+}
+
 function displaySymbol(card) {
     card.classList.add('open', 'show');
 }
@@ -95,6 +157,10 @@ function hideSymbol(card) {
 
 function displayMatch(card) {
     card.classList.add('match');
+}
+
+function resetMatches() {
+    matches = 0;
 }
 
 function addToCurrentPair(card) {
@@ -119,29 +185,4 @@ function currentPairMatches() {
 
 function allMatchesFound() {
     return matches == (cards.length/2);
-}
-
-function incrementMoveCounter() {
-    moveCounter.textContent++;
-} 
-
-function matchFound() {
-    currentPair.forEach(function(card) {
-        hideSymbol(card);
-        displayMatch(card);
-    });
-    resetCurrentPair();
-    matches++;
-}
-
-function gameWon() {
-    displayWinnerMessage();
-}
-
-function displayWinnerMessage() {
-    swal("Congratulations!", "You won with " + moveCounter.textContent + " moves!", "success", {
-        button: "Play again!",
-    // }).then((value) => {
-    //     resetGame();
-    })
 }
