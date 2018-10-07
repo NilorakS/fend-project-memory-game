@@ -64,10 +64,16 @@ let moveCounter = document.querySelector('.moves');
 let matches = 0;
 
 function turnOver(card) {
-    if(!isTurnedOver(card)) {
-        addToCurrentPair(card);
-        displaySymbol(card);
+    if (isTurnedOver(card)) {
+        // Card is already turned over
+        return;
     }
+    if (twoCardsTurnedOver(card)) {
+        // Two cards are already turned over
+        return;
+    }
+    addToCurrentPair(card);
+    displaySymbol(card);
 }
 
 function turnBackOverCurrentPair() {
@@ -100,7 +106,7 @@ function resetCurrentPair() {
 }
 
 function isTurnedOver(card) {
-    return ((card.classList.contains('open') && card.classList.contains('show')));
+    return (card.classList.contains('open') && card.classList.contains('show'));
 }
 
 function twoCardsTurnedOver() {
