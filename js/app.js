@@ -7,10 +7,12 @@ let currentPair = [];
 let moveCounter = document.querySelector('.moves');
 let matches = 0;
 const stars = Array.from(document.querySelectorAll('.star'));
-const maxMovesForAStar = 15;
+const maxMovesForOneStar = 50;
+const maxMovesForTwoStars = 25;
+const maxMovesForThreeStars = 10;
 const restart = document.querySelector('.restart');
 
-//startGame();
+startGame();
 
 
 /*
@@ -92,6 +94,22 @@ function resetCardToVirginState(card) {
     card.classList.remove('match');
 }
 
+function resetCurrentPair() {
+    currentPair.length = 0;
+}
+
+function resetMoveCounter() {
+    moveCounter.textContent = 0;
+}
+
+function resetMatches() {
+    matches = 0;
+}
+
+function resetStars() {
+    setStars(3);
+}
+
 
 /*
  * FUNCTIONS FOR CARD EVENT LISTENER
@@ -131,19 +149,7 @@ function matchFound() {
 }
 
 function gameWon() {
-    adaptStars();
     displayWinnerMessage();
-}
-
-function adaptStars() {
-    if (moveCounter.textContent <= maxMovesForAStar) {
-        for(let i=0; i<stars.length; i++) {
-            if(!stars[i].classList.contains('on')) {
-                stars[i].classList.add('on');
-                return;
-            } 
-        }
-    }
 }
 
 function displayWinnerMessage() {
@@ -160,11 +166,8 @@ function displayWinnerMessage() {
 
 function incrementMoveCounter() {
     moveCounter.textContent++;
+    changeRating();
 } 
-
-function resetMoveCounter() {
-    moveCounter.textContent = 0;
-}
 
 function displaySymbol(card) {
     card.classList.add('open', 'show');
@@ -178,24 +181,8 @@ function displayMatch(card) {
     card.classList.add('match');
 }
 
-function resetMatches() {
-    matches = 0;
-}
-
-function resetStars() {
-    if(allStarsOn()) {
-        stars.forEach(function(star) {
-            star.classList.remove('on');
-        })
-    }
-}
-
 function addToCurrentPair(card) {
     currentPair.push(card);
-}
-
-function resetCurrentPair() {
-    currentPair.length = 0;
 }
 
 function isTurnedOver(card) {
@@ -214,6 +201,33 @@ function allMatchesFound() {
     return matches == (cards.length/2);
 }
 
-function allStarsOn() {
-    return document.querySelector('.stars').lastElementChild.classList.contains('on');
+
+/*
+ * FUNCTIONS FOR STAR RATING
+ */
+
+function changeRating() {
+    if (moveCounter.textContent > maxMovesForOneStar) {
+        setStars(0);
+    } else if (moveCounter.textContent > maxMovesForTwoStars) {
+        setStars(1);
+    } else if (moveCounter.textContent > maxMovesForThreeStars) {
+        setStars(2);
+    } else {
+        setStars(3);
+    }
+}
+
+function setStars(numberOfStars) {
+    highlightStar(stars[0], numberOfStars > 0);
+    highlightStar(stars[1], numberOfStars > 1);
+    highlightStar(stars[2], numberOfStars > 2);
+}
+
+function highlightStar(star, on) {
+    if(on) {
+        star.classList.remove('off');
+    } else {
+        star.classList.add('off');
+    }
 }

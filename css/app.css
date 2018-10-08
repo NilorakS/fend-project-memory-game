@@ -107,13 +107,11 @@ h1 {
 .score-panel .stars li {
     list-style: none;
     display: inline-block;
-    transform: scale(0.8);
-    color: rgb(190, 190, 190);
+    color: gold;
 }
 
-.score-panel .stars li.on {
-    color: gold;
-    transform: scale(1.1);
+.score-panel .stars li.off {
+    color: rgb(190, 190, 190);
     transition: 500ms ease;
 }
 
