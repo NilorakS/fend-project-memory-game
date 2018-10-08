@@ -6,9 +6,11 @@ let cards = Array.from(document.querySelectorAll('.card'));
 let currentPair = [];
 let moveCounter = document.querySelector('.moves');
 let matches = 0;
+const stars = Array.from(document.querySelectorAll('.star'));
+const maxMovesForAStar = 15;
 const restart = document.querySelector('.restart');
 
-startGame();
+//startGame();
 
 
 /*
@@ -68,6 +70,7 @@ function resetValues() {
     resetCurrentPair();
     resetMoveCounter();
     resetMatches();
+    resetStars();
 } 
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -128,17 +131,31 @@ function matchFound() {
 }
 
 function gameWon() {
+    adaptStars();
     displayWinnerMessage();
 }
 
+function adaptStars() {
+    if (moveCounter.textContent <= maxMovesForAStar) {
+        for(let i=0; i<stars.length; i++) {
+            if(!stars[i].classList.contains('on')) {
+                stars[i].classList.add('on');
+                return;
+            } 
+        }
+    }
+}
+
 function displayWinnerMessage() {
-    swal("Congratulations!", "You won with " + moveCounter.textContent + " moves!", "success", {
-        button: "Play again!",
-        }).then((willPlayAgain) => {
-            if (willPlayAgain) {
-                startGame();
-            }             
-    })
+    setTimeout(function() {
+        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves!", "success", {
+            button: "PLAY AGAIN",
+            }).then((willPlayAgain) => {
+                if (willPlayAgain) {
+                    startGame();
+                }             
+        })
+    }, 1200)
 }
 
 function incrementMoveCounter() {
@@ -165,6 +182,14 @@ function resetMatches() {
     matches = 0;
 }
 
+function resetStars() {
+    if(allStarsOn()) {
+        stars.forEach(function(star) {
+            star.classList.remove('on');
+        })
+    }
+}
+
 function addToCurrentPair(card) {
     currentPair.push(card);
 }
@@ -187,4 +212,8 @@ function currentPairMatches() {
 
 function allMatchesFound() {
     return matches == (cards.length/2);
+}
+
+function allStarsOn() {
+    return document.querySelector('.stars').lastElementChild.classList.contains('on');
 }
