@@ -6,6 +6,8 @@ let cards = Array.from(document.querySelectorAll('.card'));
 let currentPair = [];
 let moveCounter = document.querySelector('.moves');
 let matches = 0;
+let startingTime;
+let endingTime;
 const stars = Array.from(document.querySelectorAll('.star'));
 const maxMovesForOneStar = 50;
 const maxMovesForTwoStars = 25;
@@ -50,9 +52,14 @@ restart.addEventListener('click', function() {
  */
 
 function startGame() {
+    startTimer();
     shuffleCards();
     updateCardDeck();
     resetValues();
+}
+
+function startTimer() {
+    startingTime = performance.now();
 }
 
 function shuffleCards() {
@@ -134,7 +141,7 @@ function turnBackOverCurrentPair() {
             hideSymbol(card);
         });
         resetCurrentPair();
-    }, 1000);
+    }, 500);
 }
 
 function matchFound() {
@@ -142,26 +149,31 @@ function matchFound() {
         setTimeout(function() {
             hideSymbol(card);
             displayMatch(card);
-        }, 600)      
+        }, 500)      
     });
     resetCurrentPair();
     matches++;
 }
 
 function gameWon() {
+    endTimer();
     displayWinnerMessage();
+}
+
+function endTimer() {
+    endingTime = performance.now();
 }
 
 function displayWinnerMessage() {
     setTimeout(function() {
-        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves!", "success", {
+        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + Math.round((endingTime - startingTime)/1000) + " seconds!", "success", {
             button: "PLAY AGAIN",
             }).then((willPlayAgain) => {
                 if (willPlayAgain) {
                     startGame();
                 }             
         })
-    }, 1200)
+    }, 700)
 }
 
 function incrementMoveCounter() {
