@@ -2,6 +2,7 @@
  * GAME SETUP
  */
 
+// global variables
 let cards = Array.from(document.querySelectorAll('.card'));
 let currentPair = [];
 let moveCounter = document.querySelector('.moves');
@@ -18,7 +19,6 @@ const maxMovesForThreeStars = 15;
 const restart = document.querySelector('.restart');
 const timer = document.querySelector('.timer');
 
-
 startGame();
 
 
@@ -26,6 +26,7 @@ startGame();
  * CLICK EVENT LISTENERS
  */
 
+// flips cards on click and deals with (mis)matches
 cards.forEach(function(card) {
     card.addEventListener('click', function onClick(event) {
 
@@ -47,6 +48,7 @@ cards.forEach(function(card) {
     });
 });
 
+// starts a new round on click
 restart.addEventListener('click', function() {
     startGame();
 });
@@ -56,6 +58,7 @@ restart.addEventListener('click', function() {
  * FUNCTIONS FOR GAME SETUP
  */
 
+// initiates all preparation steps
 function startGame() {
     resetValues();
     startTimer();
@@ -63,6 +66,7 @@ function startGame() {
     updateCardDeck();
 }
 
+// resets all values to initial state
 function resetValues() {
     resetCurrentPair();
     resetMoveCounter();
@@ -71,7 +75,7 @@ function resetValues() {
     resetTime();
 } 
 
-// counts the time in seconds
+// counts the time of the current round in seconds
 function startTimer() {
     timerID = setInterval(() => {
         time++;
@@ -83,6 +87,7 @@ function shuffleCards() {
     cards = shuffle(cards);
 }
 
+// updates the page content with the shuffled cards
 function updateCardDeck() {
     let deck = document.querySelector('.deck');
     cards.forEach(function(card) {
@@ -129,7 +134,7 @@ function displayTime() {
     }
 }
 
-// Shuffle function from http://stackoverflow.com/a/2450976
+// randomly shuffles the cards (from http://stackoverflow.com/a/2450976)
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -149,19 +154,21 @@ function shuffle(array) {
  * FUNCTIONS FOR CARD EVENT LISTENER
  */
 
+// flips a clicked card if valid
 function turnOver(card) {
     if (isTurnedOver(card)) {
-        // Card is already turned over
+        // card is already turned over
         return;
     }
     if (twoCardsTurnedOver(card)) {
-        // Two cards are already turned over
+        // two cards are already turned over
         return;
     }
     addToCurrentPair(card);
     displaySymbol(card);
 }
 
+// flips the two open cards face down
 function turnBackOverCurrentPair() {
     setTimeout(function() {
         currentPair.forEach(function(card) {
@@ -171,6 +178,7 @@ function turnBackOverCurrentPair() {
     }, 500);
 }
 
+// makes the matching cards stay flipped over
 function matchFound() {
     currentPair.forEach(function(card) {       
         setTimeout(function() {
@@ -187,12 +195,13 @@ function gameWon() {
     displayWinnerMessage();
 }
 
-// stops the timer
+// stops the timer and saves the final time
 function stopTimer() {
     clearInterval(timerID);
     finalTime = timer.innerHTML;
 }
 
+// displays the player's game metrics and asks for another round
 function displayWinnerMessage() {
     setTimeout(function() {
         swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + finalTime + "! " + finalStars + " " + (finalStars > 1 ? "stars" : "star") + " !", "success", {
@@ -210,14 +219,17 @@ function incrementMoveCounter() {
     changeRating();
 } 
 
+// displays the "front" of the card
 function displaySymbol(card) {
     card.classList.add('open', 'show');
 }
 
+// displays the "back" of the card
 function hideSymbol(card) {
     card.classList.remove('open', 'show');
 }
 
+// marks a card as located
 function displayMatch(card) {
     card.classList.add('match');
 }
@@ -226,6 +238,7 @@ function addToCurrentPair(card) {
     currentPair.push(card);
 }
 
+// checks if the card is already flipped
 function isTurnedOver(card) {
     return (card.classList.contains('open') && card.classList.contains('show'));
 }
@@ -234,10 +247,12 @@ function twoCardsTurnedOver() {
     return currentPair.length == 2;
 }
 
+// checks two cards on a match
 function currentPairMatches() {
     return currentPair[0].firstElementChild.className == currentPair[1].firstElementChild.className;
 }
 
+// checks when the game is won
 function allMatchesFound() {
     return matches == (cards.length/2);
 }
@@ -247,6 +262,7 @@ function allMatchesFound() {
  * FUNCTIONS FOR STAR RATING
  */
 
+// adapts the star rating according to the number of moves
 function changeRating() {
     if (moveCounter.textContent > maxMovesForTwoStars) {
         setStars(1);
@@ -257,6 +273,7 @@ function changeRating() {
     }
 }
 
+// defines how many stars are illuminated
 function setStars(numberOfStars) {
     highlightStar(stars[0], numberOfStars > 0);
     highlightStar(stars[1], numberOfStars > 1);
@@ -264,6 +281,7 @@ function setStars(numberOfStars) {
     finalStars = numberOfStars;
 }
 
+// turns a star on and off
 function highlightStar(star, on) {
     if(on) {
         star.classList.remove('off');
