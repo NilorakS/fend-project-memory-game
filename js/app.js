@@ -8,6 +8,7 @@ let moveCounter = document.querySelector('.moves');
 let matches = 0;
 let startingTime;
 let endingTime;
+let finalStars;
 const stars = Array.from(document.querySelectorAll('.star'));
 const maxMovesForTwoStars = 25;
 const maxMovesForThreeStars = 15;
@@ -165,7 +166,7 @@ function endTimer() {
 
 function displayWinnerMessage() {
     setTimeout(function() {
-        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + Math.round((endingTime - startingTime)/1000) + " seconds!", "success", {
+        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + Math.round((endingTime - startingTime)/1000) + " seconds! " + finalStars + " " + (finalStars > 1 ? "stars" : "star") + " !", "success", {
             button: "PLAY AGAIN",
             }).then((willPlayAgain) => {
                 if (willPlayAgain) {
@@ -231,6 +232,7 @@ function setStars(numberOfStars) {
     highlightStar(stars[0], numberOfStars > 0);
     highlightStar(stars[1], numberOfStars > 1);
     highlightStar(stars[2], numberOfStars > 2);
+    finalStars = numberOfStars;
 }
 
 function highlightStar(star, on) {
