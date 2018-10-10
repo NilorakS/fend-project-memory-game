@@ -6,13 +6,18 @@ let cards = Array.from(document.querySelectorAll('.card'));
 let currentPair = [];
 let moveCounter = document.querySelector('.moves');
 let matches = 0;
-let startingTime;
-let endingTime;
 let finalStars;
+let time;
+let timerID;
+let minutes;
+let seconds;
+let finalTime;
 const stars = Array.from(document.querySelectorAll('.star'));
 const maxMovesForTwoStars = 25;
 const maxMovesForThreeStars = 15;
 const restart = document.querySelector('.restart');
+const timer = document.querySelector('.timer');
+
 
 startGame();
 
@@ -52,15 +57,27 @@ restart.addEventListener('click', function() {
  */
 
 function startGame() {
+    resetValues();
     startTimer();
     shuffleCards();
     updateCardDeck();
-    resetValues();
 }
 
+function resetValues() {
+    resetCurrentPair();
+    resetMoveCounter();
+    resetMatches();
+    resetStars();
+    resetTime();
+} 
+
+// counts the time in seconds
 function startTimer() {
-    startingTime = performance.now();
-}
+    timerID = setInterval(() => {
+        time++;
+        displayTime();
+    }, 1000);
+}    
 
 function shuffleCards() {
     cards = shuffle(cards);
@@ -73,28 +90,6 @@ function updateCardDeck() {
         resetCardToVirginState(card);
         deck.appendChild(card);       
     });
-}
-
-function resetValues() {
-    resetCurrentPair();
-    resetMoveCounter();
-    resetMatches();
-    resetStars();
-} 
-
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
 }
 
 function resetCardToVirginState(card) {
@@ -115,6 +110,38 @@ function resetMatches() {
 
 function resetStars() {
     setStars(3);
+}
+
+function resetTime() {
+    stopTimer();
+    time = 0;
+    timer.innerHTML = "0:00";
+}
+
+// displays the time in the format m:ss
+function displayTime() {   
+    minutes = Math.floor(time / 60);
+    seconds = time % 60;
+    if (seconds < 10) {
+        timer.innerHTML = `${minutes}:0${seconds}`;
+    } else {
+        timer.innerHTML = `${minutes}:${seconds}`;
+    }
+}
+
+// Shuffle function from http://stackoverflow.com/a/2450976
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
 }
 
 
@@ -156,17 +183,19 @@ function matchFound() {
 }
 
 function gameWon() {
-    endTimer();
+    stopTimer();
     displayWinnerMessage();
 }
 
-function endTimer() {
-    endingTime = performance.now();
+// stops the timer
+function stopTimer() {
+    clearInterval(timerID);
+    finalTime = timer.innerHTML;
 }
 
 function displayWinnerMessage() {
     setTimeout(function() {
-        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + Math.round((endingTime - startingTime)/1000) + " seconds! " + finalStars + " " + (finalStars > 1 ? "stars" : "star") + " !", "success", {
+        swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + finalTime + "! " + finalStars + " " + (finalStars > 1 ? "stars" : "star") + " !", "success", {
             button: "PLAY AGAIN",
             }).then((willPlayAgain) => {
                 if (willPlayAgain) {
