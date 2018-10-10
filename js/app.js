@@ -27,8 +27,8 @@ startGame();
  */
 
 // flips cards on click and deals with (mis)matches
-cards.forEach(function(card) {
-    card.addEventListener('click', function onClick(event) {
+cards.forEach(card => {
+    card.addEventListener('click', () => {
 
         turnOver(card);
 
@@ -49,7 +49,7 @@ cards.forEach(function(card) {
 });
 
 // starts a new round on click
-restart.addEventListener('click', function() {
+restart.addEventListener('click', () => {
     startGame();
 });
 
@@ -90,7 +90,7 @@ function shuffleCards() {
 // updates the page content with the shuffled cards
 function updateCardDeck() {
     let deck = document.querySelector('.deck');
-    cards.forEach(function(card) {
+    cards.forEach(card => {
         deck.removeChild(card);
         resetCardToVirginState(card);
         deck.appendChild(card);       
@@ -170,8 +170,8 @@ function turnOver(card) {
 
 // flips the two open cards face down
 function turnBackOverCurrentPair() {
-    setTimeout(function() {
-        currentPair.forEach(function(card) {
+    setTimeout(() => {
+        currentPair.forEach(card => {
             hideSymbol(card);
         });
         resetCurrentPair();
@@ -180,8 +180,8 @@ function turnBackOverCurrentPair() {
 
 // makes the matching cards stay flipped over
 function matchFound() {
-    currentPair.forEach(function(card) {       
-        setTimeout(function() {
+    currentPair.forEach(card => {       
+        setTimeout(() => {
             hideSymbol(card);
             displayMatch(card);
         }, 500)      
@@ -203,7 +203,7 @@ function stopTimer() {
 
 // displays the player's game metrics and asks for another round
 function displayWinnerMessage() {
-    setTimeout(function() {
+    setTimeout(() => {
         swal("Congratulations!", "You won with " + moveCounter.textContent + " moves in " + finalTime + "! " + finalStars + " " + (finalStars > 1 ? "stars" : "star") + " !", "success", {
             button: "PLAY AGAIN",
             }).then((willPlayAgain) => {
