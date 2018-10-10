@@ -9,9 +9,8 @@ let matches = 0;
 let startingTime;
 let endingTime;
 const stars = Array.from(document.querySelectorAll('.star'));
-const maxMovesForOneStar = 50;
 const maxMovesForTwoStars = 25;
-const maxMovesForThreeStars = 10;
+const maxMovesForThreeStars = 15;
 const restart = document.querySelector('.restart');
 
 startGame();
@@ -219,9 +218,7 @@ function allMatchesFound() {
  */
 
 function changeRating() {
-    if (moveCounter.textContent > maxMovesForOneStar) {
-        setStars(0);
-    } else if (moveCounter.textContent > maxMovesForTwoStars) {
+    if (moveCounter.textContent > maxMovesForTwoStars) {
         setStars(1);
     } else if (moveCounter.textContent > maxMovesForThreeStars) {
         setStars(2);
